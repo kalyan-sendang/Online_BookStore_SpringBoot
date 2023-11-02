@@ -1,0 +1,74 @@
+package com.task.lms.service;
+
+import com.task.lms.model.User;
+import com.task.lms.repository.UserRepository;
+import com.task.lms.utils.CustomException;
+import com.task.lms.utils.ResponseWrapper;
+import com.task.lms.utils.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+public class UserService{
+
+    @Autowired
+
+    UserRepository userRepository;
+    //insert student
+    public UserDTO insertUser(User user) {
+        userRepository.save(user);
+        return new UserDTO(user.getId(), user.getUserName(), user.getEmail());
+    }
+
+    //get all students
+    public List<UserDTO> getAllUser() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new UserDTO(user.getId(),user.getUserName(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    //get single student
+    public UserDTO getUserById(int id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return new UserDTO(user.getId(),user.getUserName(), user.getEmail());
+        } else {
+            return null;
+        }
+    }
+
+    //update user
+    public UserDTO update(int id, User updatedUser) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+
+            // Update properties of the existing user with values from the updated user
+            existingUser.setId(id);
+            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setUserName(updatedUser.getUserName());
+            existingUser.setRole(updatedUser.getRole());
+            existingUser.setEmail(updatedUser.getEmail());
+            User user =  userRepository.save(existingUser);
+            return new UserDTO(user.getId(), user.getUserName(),user.getEmail());
+        }else{
+            return null;
+        }
+    }
+
+
+    //delete student
+    public void deleteUser(int id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            userRepository.deleteById(id);
+        }else{
+            throw new CustomException("User not found with ID: " + id);
+        }
+    }
+}
