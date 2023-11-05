@@ -6,6 +6,8 @@ import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import com.task.lms.utils.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,7 +27,7 @@ public class UserService{
 
     //get all students
     public List<UserDTO> getAllUser() {
-        List<User> users = userRepository.findAll();
+        List<User> users = userRepository.findAll(Sort.by("id"));
         return users.stream()
                 .map(user -> new UserDTO(user.getId(),user.getUserName(), user.getEmail()))
                 .collect(Collectors.toList());
@@ -41,7 +43,16 @@ public class UserService{
             return null;
         }
     }
-
+//for thymeleaf get a single user
+    public User getAUserById(int id){
+        Optional<User> optUser = userRepository.findById(id);
+        if(optUser.isPresent()){
+            User idUser = optUser.get();
+            return idUser;
+        }else{
+            return null;
+        }
+    }
     //update user
     public UserDTO update(int id, User updatedUser) {
         Optional<User> optionalUser = userRepository.findById(id);
