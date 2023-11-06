@@ -7,6 +7,7 @@ import com.task.lms.utils.UserDTO;
  import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
  import org.springframework.ui.Model;
+ import org.springframework.validation.BindingResult;
  import org.springframework.web.bind.annotation.*;
 
  import java.util.List;
@@ -31,18 +32,24 @@ public class UiController {
         return "signUp";
     }
     @PostMapping("/save")
-    public String saveUser(@Valid @ModelAttribute("user")User user){
+    public String saveUser(@Valid @ModelAttribute("user")User user, BindingResult result){
+        if(result.hasErrors()){
+            return "/signUp";
+        }
         userService.insertUser(user);
         return "redirect:/";
     }
     @GetMapping("/update/{id}")
-    public String updateUser( @Valid @PathVariable("id")int id, Model model){
+    public String updateUser( @PathVariable("id")int id,@Valid Model model){
         User user = userService.getAUserById(id);
         model.addAttribute("user", user);
         return "update";
     }
     @PostMapping("/update/{id}")
-    public String update(@Valid  @PathVariable("id")int id, @ModelAttribute("user")User user){
+    public String update(@PathVariable("id")int id,@Valid @ModelAttribute("user")User user, BindingResult result){
+        if (result.hasErrors()) {
+            return "/update";
+        }
         userService.update(id, user);
         return "redirect:/";
     }

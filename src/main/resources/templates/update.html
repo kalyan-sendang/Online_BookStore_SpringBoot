@@ -15,23 +15,38 @@
     <form action="#" th:action="@{/update/{id}(id=${user.id})}" th:object="${user}"
           method="POST">
         <!-- Add hidden form field to handle update -->
-        <div class="mb-4">
+   <!--     <div class="mb-4">
             <label for="username">Username:</label>
             <input type="text" id="username" th:field="*{userName}" class="form-control col-4">
+        </div>-->
+        <div class="mb-4">
+                <label for="username">UserName:</label>
+                <input type="text" th:field="*{userName}" id="username" placeholder="UserName" class="form-control col-4">
+                <ul>
+                    <li th:each="err : ${#fields.errors('userName')}" th:text="${err}" class="error" style="color: red" />
+                </ul>
         </div>
         <div class="mb-4">
             <label for="password">Password:</label>
-            <input type="text" id="password" th:field="*{password}" class="form-control col-4">
+            <input type="text" th:field="*{password}" id="password" placeholder="Password" class="form-control col-4">
+            <ul>
+                <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error" style="color: red" />
+            </ul>
         </div>
         <div class="mb-4">
             <label for="email">Email:</label>
-            <input type="text" id="email" th:field="*{email}" class="form-control col-4">
+            <input type="text" th:field="*{email}" id="email" placeholder="email" class="form-control col-4">
+            <ul>
+                <li th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error" style="color: red"/>
+            </ul>
         </div>
         <div class="mb-4">
-            <label for="role">Role:</label>
-            <input type="text" id="role" th:field="*{role}" class="form-control col-4">
+            <label for="email">Role:</label>
+            <input type="text" th:field="*{role}" id="role" placeholder="role" class="form-control col-4">
+            <ul>
+                <li th:each="err : ${#fields.errors('role')}" th:text="${err}" class="error" style="color: red"/>
+            </ul>
         </div>
-
         <button type="submit" class="btn btn-info col-2"> Update user</button>
     </form>
     <hr>

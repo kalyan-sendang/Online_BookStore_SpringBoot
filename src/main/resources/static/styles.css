@@ -12,3 +12,6 @@ strong {
 p {
     font-family: sans-serif;
 }
+.error{
+    color: red;
+}
