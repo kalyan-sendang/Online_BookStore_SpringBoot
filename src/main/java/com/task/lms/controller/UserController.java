@@ -16,6 +16,7 @@ import java.util.List;
 
 
 @RestController
+@RequestMapping("/api")
 public class UserController {
     @Autowired
     UserService userService;
@@ -84,5 +85,6 @@ public class UserController {
             response.setMessage("User deleted successfully");
             return ResponseEntity.ok(response);
     }
+
 }
 

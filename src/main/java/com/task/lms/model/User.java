@@ -8,21 +8,24 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @Entity
-@Table(name = "test_user")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(unique=true)
     @NotBlank(message = "Name is mandatory")
     @Pattern(regexp = "^[a-zA-Z0-9_-]{3,20}$", message = "Invalid Username")
     private String userName;
     @NotBlank(message = "Password is mandatory")
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
+    @Column(unique=true)
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
     private String email;
@@ -36,5 +39,10 @@ public class User {
     @NotBlank(message = "Role is mandatory")
     @Pattern(regexp = "^(USER|INTERN|ADMIN)$" ,message = "Invalid Roles")
     private String role;
+/*    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles;*/
 
 }
