@@ -96,7 +96,7 @@ public class UserController {
             return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/generateToken")
+    @PostMapping("/user/login")
     public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         System.out.println("Not working");
         try {
