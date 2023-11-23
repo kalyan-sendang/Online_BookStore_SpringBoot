@@ -1,7 +1,8 @@
 package com.task.lms.controller;
 
-
+import com.task.lms.config.JwtService;
 import com.task.lms.model.User;
+import com.task.lms.service.AuthRequest;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
@@ -10,6 +11,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +25,11 @@ import java.util.List;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/user")
     private ResponseEntity<ResponseWrapper> insertUser(@Valid @RequestBody User user) throws CustomException {
@@ -85,6 +95,23 @@ public class UserController {
             response.setMessage("User deleted successfully");
             return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/generateToken")
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+        System.out.println("Not working");
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                String token = jwtService.generateToken(authRequest.getUserName());
+                return ResponseEntity.ok(token);
+            } else {
+                throw new CustomException("Invalid credentials");
+            }
+        } catch (CustomException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());
+        }
+    }
+
 
 }
 

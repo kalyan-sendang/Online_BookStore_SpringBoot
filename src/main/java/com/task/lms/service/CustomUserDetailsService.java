@@ -3,6 +3,8 @@ package com.task.lms.service;
 import com.task.lms.model.User;
 import com.task.lms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
