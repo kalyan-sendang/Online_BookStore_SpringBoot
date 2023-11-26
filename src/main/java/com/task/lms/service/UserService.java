@@ -6,8 +6,6 @@ import com.task.lms.utils.CustomException;
 import com.task.lms.utils.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +23,7 @@ public class UserService{
     private PasswordEncoder passwordEncoder;
     //insert student
     public UserDTO insertUser(User user) {
+
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
