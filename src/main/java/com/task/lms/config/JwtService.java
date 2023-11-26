@@ -38,6 +38,12 @@ public String createToken(
 
 public boolean isTokenValid(String token, UserDetails userDetails){
         final  String username = extractUsername(token);
+    boolean isTokenExpired = isTokenExpired(token);
+
+    // Debug logs
+    System.out.println("Token: " + token);
+    System.out.println("Extracted Username: " + username);
+    System.out.println("Is Token Expired: " + isTokenExpired);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 }
 
@@ -54,9 +60,9 @@ public boolean isTokenValid(String token, UserDetails userDetails){
 
 
     //extract all claims
-    public <T> T extractClaim(String token, Function<Claims, T> cliamsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
-        return cliamsResolver.apply(claims);
+        return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token){
         return Jwts

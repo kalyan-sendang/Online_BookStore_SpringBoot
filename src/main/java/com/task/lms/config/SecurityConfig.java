@@ -20,6 +20,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -36,15 +40,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(configurer ->
+        http.cors(c -> c.configurationSource(corsFilter()))
+                .authorizeHttpRequests(configurer ->
                 configurer
-//                        .requestMatchers( "/**").permitAll()
-                       .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
+                        .requestMatchers( "/**").permitAll()
+/*                       .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/user/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.POST, "api/user").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "api/generateToken").permitAll()
                         .requestMatchers(HttpMethod.PUT, "api/user/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "api/user/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "api/user/**").hasRole("ADMIN")*/
 
         );
         //use basic http basic authentication
@@ -70,12 +75,21 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
-
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("http://localhost:5173");
+        config.addAllowedMethod("*");
+        config.addAllowedHeader("*");
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
 }

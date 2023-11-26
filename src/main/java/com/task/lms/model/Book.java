@@ -3,7 +3,6 @@ package com.task.lms.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.web.WebProperties;
  @Getter
  @Setter
  @Entity
@@ -13,7 +12,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
-    private String Author;
+    private String author;
     @Column
     private String title;
     @Column

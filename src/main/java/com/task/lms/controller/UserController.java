@@ -3,6 +3,7 @@ package com.task.lms.controller;
 import com.task.lms.config.JwtService;
 import com.task.lms.model.User;
 import com.task.lms.service.AuthRequest;
+import com.task.lms.service.TokenResponse;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -97,18 +97,20 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         System.out.println("Not working");
         try {
+            // Attempt to authenticate the user using the provided credentials
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
+            // If the authentication is successful, generate a JWT token
             if (authentication.isAuthenticated()) {
                 String token = jwtService.generateToken(authRequest.getUserName());
-                return ResponseEntity.ok(token);
+                return ResponseEntity.ok().body(new TokenResponse(token));
             } else {
                 throw new CustomException("Invalid credentials");
             }
         } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
     }
 
