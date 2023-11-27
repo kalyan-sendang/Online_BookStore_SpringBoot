@@ -37,21 +37,23 @@ public class SecurityConfig {
         return new CustomUserDetailsService();
     }
 
-    AuthenticationManager authenticationManager;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(c -> c.configurationSource(corsFilter()))
                 .authorizeHttpRequests(configurer ->
-                configurer
-
-                        .requestMatchers( "/**").permitAll()
-                   /*    .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
+                                configurer
+                                        .requestMatchers("/api/auth/**").hasRole("ADMIN")
+                                        .requestMatchers("/api/user/**").permitAll()
+                                        .requestMatchers("/api/book/**").permitAll()
+                                        .requestMatchers("/api/userprofile").permitAll()
+/*                       .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/user/**").hasAnyRole("USER","ADMIN")
-                        .requestMatchers(HttpMethod.POST, "api/user").permitAll()
-                        .requestMatchers(HttpMethod.POST, "api/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "api/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "api/generateToken").permitAll()
                         .requestMatchers(HttpMethod.PUT, "api/user/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "api/user/**").hasRole("ADMIN")*/
-        );
+
+                );
         //use basic http basic authentication
        /* http.httpBasic(Customizer.withDefaults())
         .formLogin(Customizer.withDefaults());*/
@@ -78,13 +80,12 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
-
-
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
     @Bean
+
     public CorsConfigurationSource corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();

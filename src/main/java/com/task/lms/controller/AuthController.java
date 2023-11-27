@@ -1,9 +1,10 @@
 package com.task.lms.controller;
 
 import com.task.lms.config.JwtService;
+import com.task.lms.model.Book;
 import com.task.lms.model.User;
-import com.task.lms.model.UserProfile;
 import com.task.lms.service.AuthRequest;
+import com.task.lms.service.BookService;
 import com.task.lms.service.TokenResponse;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
@@ -23,10 +24,12 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api")
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
     @Autowired
     UserService userService;
+    @Autowired
+    BookService bookService;
 
     @Autowired
     private JwtService jwtService;
@@ -47,22 +50,14 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("/user/{id}")
-    private ResponseEntity<ResponseWrapper> getUser(@PathVariable("id") int id) {
-        UserDTO userDTO = userService.getUserById(id);
+    @GetMapping("/user")
+    private ResponseEntity<ResponseWrapper> getAllUser() {
+        List<UserDTO> users = userService.getAllUser();
         ResponseWrapper response = new ResponseWrapper();
-        if (userDTO != null) {
-            response.setStatusCode(HttpStatus.OK.value());
-            response.setMessage("User retrieved successfully");
-            response.setResponse(userDTO);
-            return ResponseEntity.ok(response);
-        } else {
-            response.setStatusCode(HttpStatus.NOT_FOUND.value());
-            response.setMessage("User not found");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("Users retrieved successfully");
+        response.setResponse(users);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/user/{id}")
@@ -79,6 +74,15 @@ public class UserController {
             response.setMessage("User not found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+    }
+
+    @DeleteMapping("/user/{id}")
+    private ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("id") int id) {
+        userService.deleteUser(id);
+        ResponseWrapper response = new ResponseWrapper();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("User deleted successfully");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/user/login")
@@ -104,19 +108,31 @@ public class UserController {
         }
     }
 
-    @GetMapping("/userprofile")
-    public ResponseEntity<UserProfile> userProfile(String token){
-        System.out.println("userProfile");
-        System.out.println(token);
-        String id = jwtService.extractUserId(token);
-        String userName = jwtService.extractUsername(token);
-        String email = jwtService.extractEmail(token);
-        String role = jwtService.extractUserRole(token);
-
-        UserProfile userProfile = new UserProfile(id, userName, email, role);
-        return ResponseEntity.ok(userProfile);
+    @PutMapping("/book/{id}")
+    private ResponseEntity<ResponseWrapper> updateBook(@PathVariable("id")int id, @RequestBody Book book){
+        Book updatedBook = bookService.updateBook(id, book);
+        ResponseWrapper response = new ResponseWrapper();
+        if (updatedBook.getId() != null) {
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("Book updated successfully");
+            response.setResponse(updatedBook);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage("Book not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
+
+    @DeleteMapping("/book/{id}")
+    private ResponseEntity<ResponseWrapper> deleteBook(@PathVariable("id")int id){
+        bookService.deleteBook(id);
+        ResponseWrapper response = new ResponseWrapper();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setMessage("User deleted successfully");
+        return ResponseEntity.ok(response);
+    }
 
 }
 

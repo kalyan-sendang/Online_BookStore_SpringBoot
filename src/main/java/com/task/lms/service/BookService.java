@@ -1,10 +1,12 @@
 package com.task.lms.service;
 
 import com.task.lms.model.Book;
+import com.task.lms.model.User;
 import com.task.lms.repository.BookRepository;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ public class BookService {
     }
     //get all book
     public List<Book> getAllBook() {
-        return bookRepository.findAll();
+        return bookRepository.findAll(Sort.by("id"));
     }
 
     //update book

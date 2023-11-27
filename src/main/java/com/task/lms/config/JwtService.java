@@ -1,5 +1,6 @@
 package com.task.lms.config;
 
+import com.task.lms.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,18 +19,22 @@ import java.util.function.Function;
 public class JwtService {
     private static final String SECRET_KEY = "4f1feeca525de4cdb064656007da3edac7895a87ff0ea865693300fb8b6e8f9c";
 
-    public String generateToken(String userName){
+    public String generateToken(User user){
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName);
+        claims.put("id", user.getId());
+        claims.put("userName", user.getUserName());
+        claims.put("password", "");
+        claims.put("email", user.getEmail());
+        claims.put("role", user.getRole());
+        return createToken(claims);
     }
 public String createToken(
-        Map<String, Object> extraClaims,
-        String userName
-){
+        Map<String, Object> extraClaims
+         ){
     return Jwts
             .builder()
             .setClaims(extraClaims)
-            .setSubject(userName)
+            .setSubject("User Details")
             .setIssuedAt(new Date(System.currentTimeMillis()))
             .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*24))
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -49,16 +54,28 @@ public boolean isTokenValid(String token, UserDetails userDetails){
         return extractClaim(token, Claims::getExpiration);
     }
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.get("userName", String.class));
+    }
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("id", String.class));
+    }
+
+    public String extractEmail(String token) {
+        return extractClaim(token, claims -> claims.get("email", String.class));
+    }
+
+    public String extractUserRole(String token) {
+        return extractClaim(token, claims -> claims.get("role", String.class));
     }
 
 
     //extract all claims
-    public <T> T extractClaim(String token, Function<Claims, T> cliamsResolver) {
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
-        return cliamsResolver.apply(claims);
+        return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token){
+        System.out.println("Token: " + token);
         return Jwts
                 .parser()
                 .setSigningKey(getSignInKey())

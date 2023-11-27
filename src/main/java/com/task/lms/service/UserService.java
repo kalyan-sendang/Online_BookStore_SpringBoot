@@ -58,6 +58,16 @@ public class UserService{
             return null;
         }
     }
+//Get user by userName
+    public User getUserByUsername(String userName){
+        Optional<User> optionalUser = userRepository.findUserByUserName(userName);
+        if(optionalUser.isPresent()){
+            User nameUser = optionalUser.get();
+            return nameUser;
+        }else{
+            return null;
+        }
+    }
     //update user
     public UserDTO update(int id, User updatedUser) {
         Optional<User> optionalUser = userRepository.findById(id);
