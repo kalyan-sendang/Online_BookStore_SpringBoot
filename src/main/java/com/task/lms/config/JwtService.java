@@ -1,11 +1,13 @@
 package com.task.lms.config;
 
 import com.task.lms.model.User;
+import com.task.lms.utils.CustomException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -50,14 +52,15 @@ public boolean isTokenValid(String token, UserDetails userDetails){
         return extractExpiration(token).before(new Date());
     }
 
+
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-    public String extractUsername(String token) {
-        return extractClaim(token, claims -> claims.get("userName", String.class));
+    public String extractUsername(String token)
+    {  return extractClaim(token, claims -> claims.get("userName", String.class));
     }
-    public String extractUserId(String token) {
-        return extractClaim(token, claims -> claims.get("id", String.class));
+    public Integer extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("id", Integer.class));
     }
 
     public String extractEmail(String token) {
@@ -75,7 +78,6 @@ public boolean isTokenValid(String token, UserDetails userDetails){
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token){
-        System.out.println("Token: " + token);
         return Jwts
                 .parser()
                 .setSigningKey(getSignInKey())

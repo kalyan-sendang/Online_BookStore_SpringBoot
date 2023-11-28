@@ -85,28 +85,6 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/user/login")
-    public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        System.out.println("Not working");
-        try {
-
-            // Attempt to authenticate the user using the provided credentials
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
-
-            // If the authentication is successful, generate a JWT token
-            if (authentication.isAuthenticated()) {
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
-                User user = userService.getUserByUsername(userDetails.getUsername());
-                String token = jwtService.generateToken(user);
-                return ResponseEntity.ok().body(new TokenResponse(token));
-            } else {
-                throw new CustomException("Invalid credentials");
-            }
-        } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
 
     @PutMapping("/book/{id}")
     private ResponseEntity<ResponseWrapper> updateBook(@PathVariable("id")int id, @RequestBody Book book){

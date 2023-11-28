@@ -9,6 +9,7 @@ import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import com.task.lms.utils.UserDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -92,7 +93,6 @@ public class UserController {
             // If the authentication is successful, generate a JWT token
             if (authentication.isAuthenticated()) {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
                 User user = userService.getUserByUsername(userDetails.getUsername());
                 String token = jwtService.generateToken(user);
                 return ResponseEntity.ok().body(new TokenResponse(token));
@@ -105,14 +105,14 @@ public class UserController {
     }
 
     @GetMapping("/userprofile")
-    public ResponseEntity<UserProfile> userProfile(String token){
+    public ResponseEntity<UserProfile> userProfile(@RequestHeader("Authorization")String authHeader){
         System.out.println("userProfile");
+        String token = authHeader.substring(7);
         System.out.println(token);
-        String id = jwtService.extractUserId(token);
+        Integer id = jwtService.extractUserId(token);
         String userName = jwtService.extractUsername(token);
         String email = jwtService.extractEmail(token);
         String role = jwtService.extractUserRole(token);
-
         UserProfile userProfile = new UserProfile(id, userName, email, role);
         return ResponseEntity.ok(userProfile);
     }
