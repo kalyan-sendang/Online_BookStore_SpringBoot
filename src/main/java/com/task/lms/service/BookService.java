@@ -29,7 +29,7 @@ public class BookService {
     }
     //get all book
     public List<Book> getAllBook() {
-        return bookRepository.findAll(Sort.by("id"));
+        return bookRepository.findAll(Sort.by("bookId"));
     }
 
     //update book
@@ -39,12 +39,13 @@ public class BookService {
             Book existingBook = optionalBook.get();
 
             //updating existing user from updatedBook
-            existingBook.setId(id);
+            existingBook.setBookId(id);
             existingBook.setTitle(updatedBook.getTitle());
             existingBook.setAuthor(updatedBook.getAuthor());
             existingBook.setGenre(updatedBook.getGenre());
             existingBook.setPrice(updatedBook.getPrice());
-            existingBook.setAvailable(updatedBook.getAvailable());
+            existingBook.setDetail(updatedBook.getDetail());
+            existingBook.setQty(updatedBook.getQty());
             return bookRepository.save(existingBook);
         }
         return updatedBook;

@@ -10,6 +10,7 @@ import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import com.task.lms.utils.UserDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,7 +71,7 @@ public class UserController {
     private ResponseEntity<ResponseWrapper> updateUser( @PathVariable("id") int id,@Valid @RequestBody User user) {
         UserDTO updatedUserDTO = userService.update(id, user);
         ResponseWrapper response = new ResponseWrapper();
-        if (updatedUserDTO.getId() != null) {
+        if (updatedUserDTO.getUserId() != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("User updated successfully");
             response.setResponse(updatedUserDTO);
@@ -105,16 +106,15 @@ public class UserController {
     }
 
     @GetMapping("/userprofile")
-    public ResponseEntity<UserProfile> userProfile(@RequestHeader("Authorization")String authHeader){
+    public ResponseEntity<UserProfile> userProfile(HttpServletRequest request){
         System.out.println("userProfile");
-        String token = authHeader.substring(7);
-        System.out.println(token);
-        Integer id = jwtService.extractUserId(token);
-        String userName = jwtService.extractUsername(token);
-        String email = jwtService.extractEmail(token);
-        String role = jwtService.extractUserRole(token);
-        UserProfile userProfile = new UserProfile(id, userName, email, role);
-        return ResponseEntity.ok(userProfile);
+        Integer userId = (Integer) request.getAttribute("userId");
+        System.out.println(userId);
+        String userName = (String) request.getAttribute("userName");
+        String email = (String) request.getAttribute("email");
+        String role = (String) request.getAttribute("role");
+            UserProfile userProfile = new UserProfile(userId, userName, email, role);
+            return ResponseEntity.ok(userProfile);
     }
 
 

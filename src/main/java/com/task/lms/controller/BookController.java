@@ -19,8 +19,8 @@ public class BookController {
     BookService bookService;
 
 
-    @GetMapping("/book/{id}")
-    private ResponseEntity<ResponseWrapper> getBook(@PathVariable("id")int id){
+    @GetMapping("/book/{bookId}")
+    private ResponseEntity<ResponseWrapper> getBook(@PathVariable("bookId")int id){
         Book book = bookService.getABook(id);
         if (book != null) {
             try {

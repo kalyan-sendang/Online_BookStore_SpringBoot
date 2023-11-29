@@ -42,9 +42,10 @@ public class SecurityConfig {
         http.cors(c -> c.configurationSource(corsFilter()))
                 .authorizeHttpRequests(configurer ->
                                 configurer
-                                        .requestMatchers("/api/auth/**").hasRole("ADMIN")
+                                        .requestMatchers("/api/auth/**").permitAll()
                                         .requestMatchers("/api/user/**").permitAll()
                                         .requestMatchers("/api/book/**").permitAll()
+                                        .requestMatchers("api/cart/**").permitAll()
                                         .requestMatchers("/api/userprofile").permitAll()
 /*                       .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/user/**").hasAnyRole("USER","ADMIN")

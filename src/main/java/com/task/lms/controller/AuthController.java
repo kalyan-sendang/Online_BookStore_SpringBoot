@@ -61,10 +61,10 @@ public class AuthController {
     }
 
     @PutMapping("/user/{id}")
-    private ResponseEntity<ResponseWrapper> updateUser( @PathVariable("id") int id,@Valid @RequestBody User user) {
+    private ResponseEntity<ResponseWrapper> updateUser( @PathVariable("userId") int id,@Valid @RequestBody User user) {
         UserDTO updatedUserDTO = userService.update(id, user);
         ResponseWrapper response = new ResponseWrapper();
-        if (updatedUserDTO.getId() != null) {
+        if (updatedUserDTO.getUserId() != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("User updated successfully");
             response.setResponse(updatedUserDTO);
@@ -76,8 +76,8 @@ public class AuthController {
         }
     }
 
-    @DeleteMapping("/user/{id}")
-    private ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("id") int id) {
+    @DeleteMapping("/user/{userId}")
+    private ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("userId") int id) {
         userService.deleteUser(id);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
@@ -85,12 +85,27 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/book")
+    private ResponseEntity<ResponseWrapper> updateBook( @RequestBody Book book){
+        Book newBook = bookService.insertBook(book);
+        ResponseWrapper response = new ResponseWrapper();
+        if (newBook != null) {
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("Book added successfully");
+            response.setResponse(newBook);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage("Book not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 
     @PutMapping("/book/{id}")
     private ResponseEntity<ResponseWrapper> updateBook(@PathVariable("id")int id, @RequestBody Book book){
         Book updatedBook = bookService.updateBook(id, book);
         ResponseWrapper response = new ResponseWrapper();
-        if (updatedBook.getId() != null) {
+        if (updatedBook.getBookId() != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Book updated successfully");
             response.setResponse(updatedBook);

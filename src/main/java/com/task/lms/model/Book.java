@@ -10,7 +10,7 @@ import lombok.Setter;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer bookId;
     @Column
     private String author;
     @Column
@@ -20,6 +20,8 @@ public class Book {
     @Column
     private Float price;
     @Column
-    private Boolean available;
+    private Integer qty;
+    @Column(length = 200)
+     private String detail;
 
 }

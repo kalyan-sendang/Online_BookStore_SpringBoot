@@ -27,14 +27,14 @@ public class UserService{
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        return new UserDTO(user.getId(), user.getUserName(), user.getEmail());
+        return new UserDTO(user.getUserId(), user.getUserName(), user.getEmail());
     }
 
     //get all students
     public List<UserDTO> getAllUser() {
-        List<User> users = userRepository.findAll(Sort.by("id"));
+        List<User> users = userRepository.findAll(Sort.by("userId"));
         return users.stream()
-                .map(user -> new UserDTO(user.getId(),user.getUserName(), user.getEmail()))
+                .map(user -> new UserDTO(user.getUserId(),user.getUserName(), user.getEmail()))
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class UserService{
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return new UserDTO(user.getId(),user.getUserName(), user.getEmail());
+            return new UserDTO(user.getUserId(),user.getUserName(), user.getEmail());
         } else {
             return null;
         }
@@ -75,13 +75,13 @@ public class UserService{
             User existingUser = optionalUser.get();
 
             // Update properties of the existing user with values from the updated user
-            existingUser.setId(id);
+            existingUser.setUserId(id);
             existingUser.setPassword(updatedUser.getPassword());
             existingUser.setUserName(updatedUser.getUserName());
             existingUser.setRole(updatedUser.getRole());
             existingUser.setEmail(updatedUser.getEmail());
             User user =  userRepository.save(existingUser);
-            return new UserDTO(user.getId(), user.getUserName(),user.getEmail());
+            return new UserDTO(user.getUserId(), user.getUserName(),user.getEmail());
         }else{
             return null;
         }
