@@ -9,6 +9,7 @@ import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import com.task.lms.utils.UserDTO;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 
 @RestController
@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
         System.out.println("Not working");
         try {
 
@@ -96,6 +96,13 @@ public class UserController {
                 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
                 User user = userService.getUserByUsername(userDetails.getUsername());
                 String token = jwtService.generateToken(user);
+                final Cookie cookie = new Cookie("auth", token);
+                cookie.setSecure(false);
+                cookie.setHttpOnly(true);
+                cookie.setMaxAge(50400);
+                cookie.setPath("/api");
+                response.addCookie(cookie);
+
                 return ResponseEntity.ok().body(new TokenResponse(token));
             } else {
                 throw new CustomException("Invalid credentials");
@@ -107,9 +114,7 @@ public class UserController {
 
     @GetMapping("/userprofile")
     public ResponseEntity<UserProfile> userProfile(HttpServletRequest request){
-        System.out.println("userProfile");
         Integer userId = (Integer) request.getAttribute("userId");
-        System.out.println(userId);
         String userName = (String) request.getAttribute("userName");
         String email = (String) request.getAttribute("email");
         String role = (String) request.getAttribute("role");

@@ -86,7 +86,7 @@ public class AuthController {
     }
 
     @PostMapping("/book")
-    private ResponseEntity<ResponseWrapper> updateBook( @RequestBody Book book){
+    private ResponseEntity<ResponseWrapper> updateBook(@Valid @RequestBody Book book){
         Book newBook = bookService.insertBook(book);
         ResponseWrapper response = new ResponseWrapper();
         if (newBook != null) {
@@ -102,7 +102,7 @@ public class AuthController {
     }
 
     @PutMapping("/book/{id}")
-    private ResponseEntity<ResponseWrapper> updateBook(@PathVariable("id")int id, @RequestBody Book book){
+    private ResponseEntity<ResponseWrapper> updateBook(@Valid @PathVariable("id")int id, @RequestBody Book book){
         Book updatedBook = bookService.updateBook(id, book);
         ResponseWrapper response = new ResponseWrapper();
         if (updatedBook.getBookId() != null) {

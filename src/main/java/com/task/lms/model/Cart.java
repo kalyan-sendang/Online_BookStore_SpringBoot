@@ -1,6 +1,7 @@
 package com.task.lms.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class Cart {
     private Book book;
 
     @Column
-    @Pattern(regexp = "^(0|[1-9]\\d*)$", message = "Invalid Qty")
+    @Min(value = 0, message = "Qty must be greater than or equal to 0")
     private Integer qty;
 
      public Cart(){

@@ -38,12 +38,11 @@ public  class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             jwt = authHeader.substring(7);
             userName = jwtService.extractUsername(jwt);
-
         }
         //to extract the username from jwt token
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-            System.out.println(userDetails);
+            System.out.println("userDetails"+ userDetails);
             if (jwtService.isTokenValid(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -60,8 +59,6 @@ public  class JwtAuthenticationFilter extends OncePerRequestFilter {
             request.setAttribute("email", jwtService.extractEmail(jwt));
             request.setAttribute("role", jwtService.extractUserRole(jwt));
         }
-
-
         filterChain.doFilter(request, response);
     }
 

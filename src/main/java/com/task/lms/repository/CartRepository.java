@@ -9,6 +9,6 @@ import java.util.List;
 
 
 public interface CartRepository extends JpaRepository<Cart, Integer> {
-    @Query(value = "SELECT * FROM cart WHERE userId = :userId", nativeQuery = true)
-    List<Cart> findAllBooksByUser(long userId);
+    @Query(value = "SELECT * FROM cart WHERE user_id = :userId", nativeQuery = true)
+    List<Cart> findAllBooksByUser(Integer userId);
 }

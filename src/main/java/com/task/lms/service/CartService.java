@@ -1,7 +1,8 @@
 package com.task.lms.service;
 
+import com.task.lms.model.Book;
 import com.task.lms.model.Cart;
-import com.task.lms.model.User;
+import com.task.lms.repository.BookRepository;
 import com.task.lms.repository.CartRepository;
 import com.task.lms.utils.CartDto;
 
@@ -17,10 +18,11 @@ import java.util.stream.Collectors;
 public class CartService {
 
     private final CartRepository cartRepository;
-
+    private final BookRepository bookRepository;
     @Autowired
-    public CartService(CartRepository cartRepository) {
+    public CartService(CartRepository cartRepository, BookRepository bookRepository) {
         this.cartRepository = cartRepository;
+        this.bookRepository =bookRepository;
     }
 
     public List<CartDto> getBookInCart(Integer userId) {
@@ -33,6 +35,8 @@ public class CartService {
 
     public CartDto addBookToCart(Cart cart) {
         Cart newCart = cartRepository.save(cart);
+        subtractQtyBook(newCart);
+
         return new CartDto(newCart.getCartId(), newCart.getQty(), newCart.getBook());
     }
 
@@ -44,6 +48,7 @@ public class CartService {
 
                 existingCart.setQty(qty);
                 Cart cart = cartRepository.save(existingCart);
+                subtractQtyBook(cart);
                 return new CartDto(cart.getCartId(), cart.getQty(), cart.getBook());
             } else {
                 return null;
@@ -63,5 +68,19 @@ public class CartService {
                 throw new CustomException("User not found with ID: " + id);
             }
         }
+    }
+
+    public void subtractQtyBook(Cart newCart){
+        // Subtract the quantity from the Book entity
+        Integer bookId = newCart.getBook().getBookId();
+
+        Optional<Book> optionalBook = bookRepository.findById(bookId);
+        if(optionalBook.isPresent()){
+            Book book = optionalBook.get();
+            System.out.println(book.getQty());
+            book.setQty(book.getQty() - newCart.getQty());
+            bookRepository.save(book);
+        }
+
     }
 }

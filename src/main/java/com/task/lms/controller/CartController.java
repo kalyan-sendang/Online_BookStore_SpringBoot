@@ -44,19 +44,20 @@ public class CartController {
         }
     }
 
-    @PostMapping("/cart")
-    private ResponseEntity<ResponseWrapper> addToCart( @RequestBody long bookId, HttpServletRequest request) throws CustomException{
+    @PostMapping("/cart/{bookId}")
+    private ResponseEntity<ResponseWrapper> addToCart(@PathVariable Integer bookId, @RequestBody Integer qty, HttpServletRequest request) throws CustomException{
         try {
             Cart newCart = new Cart();
             Book book = new Book();
             User user = new User();
 
 
-            book.setBookId((int) bookId);
+            book.setBookId(bookId);
             Integer userId = (Integer) request.getAttribute("userId");
             user.setUserId(userId);
 
-            newCart.setQty(1);
+
+            newCart.setQty(qty);
             newCart.setBook(book);
             newCart.setUser(user);
             ResponseWrapper response = new ResponseWrapper();

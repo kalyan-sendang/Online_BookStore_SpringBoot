@@ -1,6 +1,7 @@
 package com.task.lms.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
  @Getter
@@ -20,6 +21,7 @@ public class Book {
     @Column
     private Float price;
     @Column
+    @Min(value = 0, message = "Qty must be greater than or equal to 0")
     private Integer qty;
     @Column(length = 200)
      private String detail;
