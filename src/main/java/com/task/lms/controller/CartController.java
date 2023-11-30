@@ -44,20 +44,29 @@ public class CartController {
         }
     }
 
-    @PostMapping("/cart/{bookId}")
-    private ResponseEntity<ResponseWrapper> addToCart(@PathVariable Integer bookId, @RequestBody Integer qty, HttpServletRequest request) throws CustomException{
+    @PostMapping("/cart")
+    private ResponseEntity<ResponseWrapper> addToCart(@RequestBody Integer bookId,   HttpServletRequest request) throws CustomException{
         try {
+            Integer userId = (Integer) request.getAttribute("userId");
+            if(cartService.checkBookInCart(userId, bookId)!= null){
+                ResponseWrapper response = new ResponseWrapper();
+                response.setStatusCode(HttpStatus.CREATED.value());
+                response.setMessage("Book is already present in Cart");
+                response.setResponse(null);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }else{
+
             Cart newCart = new Cart();
             Book book = new Book();
             User user = new User();
 
 
             book.setBookId(bookId);
-            Integer userId = (Integer) request.getAttribute("userId");
+
             user.setUserId(userId);
 
 
-            newCart.setQty(qty);
+            newCart.setQty(1);
             newCart.setBook(book);
             newCart.setUser(user);
             ResponseWrapper response = new ResponseWrapper();
@@ -65,12 +74,13 @@ public class CartController {
             response.setMessage("Cart created successfully");
             response.setResponse(cartService.addBookToCart(newCart));
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }
         }catch(CustomException e) {
             throw new CustomException(e.getMessage());
         }
         }
 
-    @PutMapping("/update/{cartId}")
+    @PutMapping("/cart/{cartId}")
     public ResponseEntity<ResponseWrapper> editCart(@PathVariable Integer cartId, @RequestBody Integer qty,  HttpServletRequest request) {
         try {
             Integer userId = (Integer) request.getAttribute("userId");
@@ -87,7 +97,7 @@ public class CartController {
     }
 
 
-    @DeleteMapping("/delete/{cartId}")
+    @DeleteMapping("/cart/{cartId}")
     public ResponseEntity<ResponseWrapper> deleteCart(@PathVariable Integer cartId, HttpServletRequest request){
         Integer userId = (Integer) request.getAttribute("userId");
         cartService.deleteCart(cartId, userId);

@@ -25,6 +25,11 @@ public class CartService {
         this.bookRepository =bookRepository;
     }
 
+    public Cart checkBookInCart(Integer userId, Integer bookId){
+        Cart cart = cartRepository.findCartByUserIdAndBookId(userId, bookId);
+        return cart;
+    }
+
     public List<CartDto> getBookInCart(Integer userId) {
         List<Cart> carts = cartRepository.findAllBooksByUser(userId);
         return carts.stream()
@@ -35,27 +40,22 @@ public class CartService {
 
     public CartDto addBookToCart(Cart cart) {
         Cart newCart = cartRepository.save(cart);
-        subtractQtyBook(newCart);
+//        subtractQtyBook(newCart);
 
         return new CartDto(newCart.getCartId(), newCart.getQty(), newCart.getBook());
     }
 
     public CartDto updateCart(Integer id, Integer qty, Integer userId) {
-        Optional<Cart> optionalCart = cartRepository.findById(id);
-        if (optionalCart.isPresent()) {
-            Cart existingCart = optionalCart.get();
+        Optional<Cart> optionalCart = Optional.ofNullable(cartRepository.findById(id).orElse(null));
+        Cart existingCart = optionalCart.get();
             if (existingCart.getUser().getUserId().equals(userId)) {
-
                 existingCart.setQty(qty);
                 Cart cart = cartRepository.save(existingCart);
-                subtractQtyBook(cart);
+//                subtractQtyBook(cart);
                 return new CartDto(cart.getCartId(), cart.getQty(), cart.getBook());
             } else {
                 return null;
             }
-
-        }
-        return null;
     }
 
     public void deleteCart(Integer id, Integer userId) {
@@ -70,17 +70,17 @@ public class CartService {
         }
     }
 
-    public void subtractQtyBook(Cart newCart){
-        // Subtract the quantity from the Book entity
-        Integer bookId = newCart.getBook().getBookId();
-
-        Optional<Book> optionalBook = bookRepository.findById(bookId);
-        if(optionalBook.isPresent()){
-            Book book = optionalBook.get();
-            System.out.println(book.getQty());
-            book.setQty(book.getQty() - newCart.getQty());
-            bookRepository.save(book);
-        }
-
-    }
+//    public void subtractQtyBook(Cart newCart){
+//        // Subtract the quantity from the Book entity
+//        Integer bookId = newCart.getBook().getBookId();
+//
+//        Optional<Book> optionalBook = bookRepository.findById(bookId);
+//        if(optionalBook.isPresent()){
+//            Book book = optionalBook.get();
+//            System.out.println(book.getQty());
+//            book.setQty(book.getQty() - newCart.getQty());
+//            bookRepository.save(book);
+//        }
+//
+//    }
 }
