@@ -20,17 +20,17 @@ public class ReviewDto {
 
     @Min(value = 0, message = "Rating should be greater than 0")
     @Max(value = 5, message = "Rating should be less than 6")
-    private int rating;
+    private Float rating;
 
     private String comment;
 
     private String username;
 
-    private long userId;
+    private Integer userId;
 
     private LocalDateTime date;
 
-    public ReviewDto(Integer bookId, int rating, String comment) {
+    public ReviewDto(Integer bookId, Float rating, String comment) {
         this.bookId = bookId;
         this.rating = rating;
         this.comment = comment;

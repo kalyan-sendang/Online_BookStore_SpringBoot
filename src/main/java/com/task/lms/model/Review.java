@@ -26,7 +26,7 @@ public class Review {
     private Book book;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Float rating;
 
     @Column(name = "comment")
     private String comment;
@@ -34,10 +34,14 @@ public class Review {
     @Column(name = "date")
     private LocalDateTime date = LocalDateTime.now();
 
-    public Review(User user, Book book, Integer rating, String comment) {
+    public Review(User user, Book book, Float rating, String comment) {
         this.user = user;
         this.book = book;
         this.rating = rating;
         this.comment = comment;
+    }
+
+    public Review() {
+
     }
 }

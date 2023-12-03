@@ -7,24 +7,25 @@ import com.task.lms.model.Review;
 import com.task.lms.model.User;
 import com.task.lms.repository.ReviewRepository;
 
+import com.task.lms.repository.UserRepository;
 import com.task.lms.utils.ResponseWrapper;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ReviewService {
     private  ReviewRepository reviewRepository;
 
+    private UserRepository userRepository;
 
-    public ReviewService(ReviewRepository reviewRepository) {
+
+    public ReviewService(ReviewRepository reviewRepository,UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
     }
 
     public Review getReviewByUserId(Integer userId){
@@ -41,56 +42,54 @@ public class ReviewService {
         return reviewDtoList;
     }
 
-    public ReviewDto addReview(ReviewDto reviewDto, User newUser) {
+    public ReviewDto addReview(ReviewDto reviewDto, Integer userId) {
         Book book = new Book();
         book.setBookId(reviewDto.getBookId());
 
-        User user = new User();
-        user.setUserId(newUser.getUserId());
-        user.setUserName(newUser.getUserName());
+        Optional<User> newUser = Optional.ofNullable(userRepository.findById(userId).orElse(null));
+            User user = newUser.get();
+            Review newReview = new Review(user, book, reviewDto.getRating(), reviewDto.getComment());
+            try {
+                Review review = reviewRepository.save(newReview);
+                return new ReviewDto(review);
+            } catch (Exception exception) {
+                return null;
+            }
 
-        Review newReview = new Review(user, book, reviewDto.getRating(), reviewDto.getComment());
-        try {
-            Review review = reviewRepository.save(newReview);
-            return new ReviewDto(review);
-        } catch (Exception exception) {
-            return null;
-        }
     }
 
     public ResponseEntity<ResponseWrapper> editReview(ReviewDto reviewDto, Integer userId, Integer reviewId) {
-        Review prevReview = reviewRepository.findById(reviewId).orElse(null);
+        Optional<Review> prevReview = reviewRepository.findById(reviewId);
         ResponseWrapper response = new ResponseWrapper();
-        if (prevReview == null) {
+        if (!prevReview.isPresent()) {
             response.setSuccess(false);
             response.setMessage("Cannot found review");
             response.setStatusCode(HttpStatus.NOT_FOUND.value());
             return ResponseEntity.ok(response);
         } else {
-            if (prevReview.getUser().getUserId() != userId) {
+            Review newReview = prevReview.get();
+            if (!newReview.getReviewId().equals(userId)) {
                 response.setSuccess(false);
                 response.setMessage("Cannot found review");
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
-                prevReview.setRating(reviewDto.getRating());
-                prevReview.setComment(reviewDto.getComment());
+                newReview.setRating(reviewDto.getRating());
+                newReview.setComment(reviewDto.getComment());
 
-                Review newReview =  reviewRepository.save(prevReview);
-
-                ReviewDto reviewDto1 = new ReviewDto(newReview);
+                Review updatedReview =  reviewRepository.save(newReview);
+                ReviewDto newReviewDto = new ReviewDto(updatedReview);
                 response.setSuccess(true);
                 response.setMessage("Updated Successfully");
                 response.setStatusCode(HttpStatus.OK.value());
-                response.setResponse(reviewDto1);
+                response.setResponse(newReviewDto);
                 return ResponseEntity.ok(response);
-
             }
         }
 
     }
 
-   /* public Map<String, Object> getSingleBookRating(Integer bookId) {
+    public Map<String, Object> getSingleBookRating(Integer bookId) {
         List<Map<String, Object>> reviews = reviewRepository.getOverallRatingAndNumReviewsForSingleBook(bookId);
         try {
             return reviews.get(0);
@@ -103,7 +102,7 @@ public class ReviewService {
         }
     }
 
-    public List<Map<String, Object>> getRatingOfBooks(List<Long> bookIds) {
+    public List<Map<String, Object>> getRatingOfBooks(List<Integer> bookIds) {
         return reviewRepository.getOverallRatingAndNumReviewsForBooks(bookIds);
-    }*/
+    }
 }

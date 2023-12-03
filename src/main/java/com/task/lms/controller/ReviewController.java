@@ -2,13 +2,13 @@ package com.task.lms.controller;
 
 import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Review;
-import com.task.lms.model.User;
+
 import com.task.lms.service.ReviewService;
 import com.task.lms.utils.ResponseWrapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+
 import jakarta.validation.Valid;
-import org.springframework.context.annotation.Conditional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,7 +27,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/review/{id}")
+    @GetMapping("/review/{userId}")
     public ResponseEntity<ResponseWrapper>getSingleReview(@PathVariable Integer userId){
         Review review = reviewService.getReviewByUserId(userId);
         ResponseWrapper response = new ResponseWrapper();
@@ -38,7 +38,7 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("reviews/{id}")
+    @GetMapping("review/{bookId}")
     public ResponseEntity<ResponseWrapper>getAllReview(@PathVariable Integer bookId){
         List<ReviewDto> listReview = reviewService.getAllReviewByBook(bookId);
         ResponseWrapper response = new ResponseWrapper();
@@ -49,14 +49,14 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/reviews")
+    @PostMapping("/review")
     public ResponseEntity<ResponseWrapper> addReview(@Valid @RequestBody ReviewDto ReviewDto, HttpServletRequest request){
-        User user = (User) request.getAttribute("userId");
+        Integer userId = (Integer) request.getAttribute("userId");
 
-        Review prevReview = reviewService.getReviewByUserId(user.getUserId());
+        Review prevReview = reviewService.getReviewByUserId(userId);
         ResponseWrapper response = new ResponseWrapper();
         if(prevReview == null){
-            ReviewDto newReview = reviewService.addReview(ReviewDto, user);
+            ReviewDto newReview = reviewService.addReview(ReviewDto, userId);
 
             if(newReview == null){
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -72,7 +72,7 @@ public class ReviewController {
                 return ResponseEntity.ok(response);
             }
         }else{
-            return reviewService.editReview(ReviewDto, user.getUserId(), prevReview.getReviewId());
+            return reviewService.editReview(ReviewDto, userId, prevReview.getReviewId());
         }
     }
 }
