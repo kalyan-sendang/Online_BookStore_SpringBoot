@@ -1,4 +1,4 @@
-package com.task.lms.service;
+package com.task.lms.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

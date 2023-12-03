@@ -27,6 +27,7 @@ public class BookController {
                 ResponseWrapper response = new ResponseWrapper();
                 response.setStatusCode(HttpStatus.OK.value());
                 response.setMessage("Book retrieved successfully");
+                response.setSuccess(true);
                 response.setResponse(book);
                 return ResponseEntity.ok(response);
             }catch(CustomException e){
@@ -47,6 +48,7 @@ public class BookController {
                 ResponseWrapper response = new ResponseWrapper();
                 response.setStatusCode(HttpStatus.OK.value());
                 response.setMessage("Books retrieved successfully");
+                response.setSuccess(true);
                 response.setResponse(books);
                 return ResponseEntity.ok(response);
         }

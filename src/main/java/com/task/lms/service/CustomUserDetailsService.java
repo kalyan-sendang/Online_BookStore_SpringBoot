@@ -3,6 +3,7 @@ package com.task.lms.service;
 
 import com.task.lms.model.User;
 import com.task.lms.repository.UserRepository;
+import com.task.lms.utils.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;

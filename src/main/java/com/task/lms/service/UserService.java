@@ -3,7 +3,7 @@ package com.task.lms.service;
 import com.task.lms.model.User;
 import com.task.lms.repository.UserRepository;
 import com.task.lms.utils.CustomException;
-import com.task.lms.utils.UserDTO;
+import com.task.lms.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;

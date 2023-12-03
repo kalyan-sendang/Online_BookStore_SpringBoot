@@ -1,14 +1,14 @@
 package com.task.lms.controller;
 
-import com.task.lms.config.JwtService;
+import com.task.lms.service.JwtService;
 import com.task.lms.model.User;
 import com.task.lms.model.UserProfile;
-import com.task.lms.service.AuthRequest;
-import com.task.lms.service.TokenResponse;
+import com.task.lms.model.AuthRequest;
+import com.task.lms.model.TokenResponse;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
-import com.task.lms.utils.UserDTO;
+import com.task.lms.dto.UserDTO;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,6 +42,7 @@ public class UserController {
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.CREATED.value());
             response.setMessage("User created successfully");
+            response.setSuccess(true);
             response.setResponse(createdUserDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(CustomException e) {
@@ -57,6 +58,7 @@ public class UserController {
         if (userDTO != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("User retrieved successfully");
+            response.setSuccess(true);
             response.setResponse(userDTO);
             return ResponseEntity.ok(response);
         } else {
@@ -74,6 +76,7 @@ public class UserController {
         if (updatedUserDTO.getUserId() != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("User updated successfully");
+            response.setSuccess(true);
             response.setResponse(updatedUserDTO);
             return ResponseEntity.ok(response);
         } else {

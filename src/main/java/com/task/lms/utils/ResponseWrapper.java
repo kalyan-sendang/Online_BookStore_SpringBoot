@@ -3,6 +3,16 @@ package com.task.lms.utils;
 public class ResponseWrapper {
     private int statusCode;
     private String message;
+    private boolean success;
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
     private Object response;
 
 //    public ResponseWrapper(int statusCode, String message, Object response) {

@@ -4,11 +4,10 @@ import com.task.lms.model.Book;
 import com.task.lms.model.Cart;
 import com.task.lms.model.User;
 import com.task.lms.service.CartService;
-import com.task.lms.utils.CartDto;
+import com.task.lms.dto.CartDto;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +35,7 @@ public class CartController {
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Carts retrieved successfully");
+            response.setSuccess(true);
             response.setResponse(cart);
             return ResponseEntity.ok(response);
         }
@@ -52,6 +52,7 @@ public class CartController {
                 ResponseWrapper response = new ResponseWrapper();
                 response.setStatusCode(HttpStatus.CREATED.value());
                 response.setMessage("Book is already present in Cart");
+                response.setSuccess(false);
                 response.setResponse(null);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }else{
@@ -72,6 +73,7 @@ public class CartController {
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Cart created successfully");
+                response.setSuccess(true);
             response.setResponse(cartService.addBookToCart(newCart));
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }
@@ -88,6 +90,7 @@ public class CartController {
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Cart updated successfully");
+            response.setSuccess(true);
             response.setResponse(newCardDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
@@ -103,6 +106,7 @@ public class CartController {
         cartService.deleteCart(cartId, userId);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
+        response.setSuccess(true);
         response.setMessage("User deleted successfully");
         return ResponseEntity.ok(response);
 

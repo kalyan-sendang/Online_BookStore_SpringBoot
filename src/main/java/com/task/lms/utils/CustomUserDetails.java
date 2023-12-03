@@ -1,4 +1,4 @@
-package com.task.lms.service;
+package com.task.lms.utils;
 
 import com.task.lms.model.User;
 import org.springframework.security.core.GrantedAuthority;

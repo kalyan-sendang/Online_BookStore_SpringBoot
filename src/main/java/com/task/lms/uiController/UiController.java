@@ -2,7 +2,7 @@ package com.task.lms.uiController;
 
  import com.task.lms.model.User;
  import com.task.lms.service.UserService;
-import com.task.lms.utils.UserDTO;
+import com.task.lms.dto.UserDTO;
  import jakarta.validation.Valid;
  import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

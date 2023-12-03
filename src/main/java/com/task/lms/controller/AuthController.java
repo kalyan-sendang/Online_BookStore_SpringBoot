@@ -1,23 +1,18 @@
 package com.task.lms.controller;
 
-import com.task.lms.config.JwtService;
+import com.task.lms.service.JwtService;
 import com.task.lms.model.Book;
 import com.task.lms.model.User;
-import com.task.lms.service.AuthRequest;
 import com.task.lms.service.BookService;
-import com.task.lms.service.TokenResponse;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
-import com.task.lms.utils.UserDTO;
+import com.task.lms.dto.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -92,6 +87,7 @@ public class AuthController {
         if (newBook != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Book added successfully");
+            response.setSuccess(true);
             response.setResponse(newBook);
             return ResponseEntity.ok(response);
         } else {
@@ -108,6 +104,7 @@ public class AuthController {
         if (updatedBook.getBookId() != null) {
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Book updated successfully");
+            response.setSuccess(true);
             response.setResponse(updatedBook);
             return ResponseEntity.ok(response);
         } else {
@@ -123,6 +120,7 @@ public class AuthController {
         bookService.deleteBook(id);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
+        response.setSuccess(true);
         response.setMessage("User deleted successfully");
         return ResponseEntity.ok(response);
     }

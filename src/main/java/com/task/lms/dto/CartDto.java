@@ -1,4 +1,4 @@
-package com.task.lms.utils;
+package com.task.lms.dto;
 
 import com.task.lms.model.Book;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package com.task.lms.config;
 
 import com.task.lms.service.CustomUserDetailsService;
+import com.task.lms.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

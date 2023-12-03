@@ -1,10 +1,9 @@
 package com.task.lms.service;
 
-import com.task.lms.model.Book;
 import com.task.lms.model.Cart;
 import com.task.lms.repository.BookRepository;
 import com.task.lms.repository.CartRepository;
-import com.task.lms.utils.CartDto;
+import com.task.lms.dto.CartDto;
 
 import com.task.lms.utils.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;

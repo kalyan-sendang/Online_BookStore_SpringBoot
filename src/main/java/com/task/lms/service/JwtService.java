@@ -1,4 +1,4 @@
-package com.task.lms.config;
+package com.task.lms.service;
 
 import com.task.lms.model.User;
 import com.task.lms.utils.CustomException;
