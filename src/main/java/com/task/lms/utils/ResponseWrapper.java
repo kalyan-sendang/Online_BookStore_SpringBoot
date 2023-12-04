@@ -5,6 +5,25 @@ public class ResponseWrapper {
     private String message;
     private boolean success;
 
+    private long totalItems;
+    private int totalPages;
+
+    public long getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(long totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
+
     public boolean isSuccess() {
         return success;
     }

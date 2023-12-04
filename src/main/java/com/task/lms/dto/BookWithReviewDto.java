@@ -9,7 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class BookWithReviewDto {
-    private List<Book> books;
     private Integer bookId;
     private String title;
     private String detail;
@@ -36,9 +35,9 @@ public class BookWithReviewDto {
         this.numberOfReviews = numberOfReviews;
     }
 
-    public BookWithReviewDto(List<Book> books ,long totalItems, long totalPages) {
-        this.books = books;
-        this.totalItems = totalItems;
-        this.totalPages = totalPages;
-    }
+//    public BookWithReviewDto(List<Book> books ,long totalItems, long totalPages) {
+//        this.books = books;
+//        this.totalItems = totalItems;
+//        this.totalPages = totalPages;
+//    }
 }

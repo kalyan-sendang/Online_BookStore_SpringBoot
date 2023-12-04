@@ -80,6 +80,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+
     @PostMapping("/book")
     private ResponseEntity<ResponseWrapper> updateBook(@Valid @RequestBody Book book){
         Book newBook = bookService.insertBook(book);
@@ -97,8 +98,8 @@ public class AuthController {
         }
     }
 
-    @PutMapping("/book/{id}")
-    private ResponseEntity<ResponseWrapper> updateBook(@Valid @PathVariable("id")int id, @RequestBody Book book){
+    @PutMapping("/book/{bookId}")
+    private ResponseEntity<ResponseWrapper> updateBook(@Valid @PathVariable("bookId")int id, @RequestBody Book book){
         Book updatedBook = bookService.updateBook(id, book);
         ResponseWrapper response = new ResponseWrapper();
         if (updatedBook.getBookId() != null) {
@@ -115,8 +116,8 @@ public class AuthController {
     }
 
 
-    @DeleteMapping("/book/{id}")
-    private ResponseEntity<ResponseWrapper> deleteBook(@PathVariable("id")int id){
+    @DeleteMapping("/book/{bookId}")
+    private ResponseEntity<ResponseWrapper> deleteBook(@PathVariable("bookId")int id){
         bookService.deleteBook(id);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());

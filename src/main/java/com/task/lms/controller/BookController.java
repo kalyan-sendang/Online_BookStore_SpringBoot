@@ -2,6 +2,7 @@ package com.task.lms.controller;
 
 import com.task.lms.dto.BookResDto;
 import com.task.lms.dto.BookWithReviewDto;
+import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Book;
 import com.task.lms.model.User;
 import com.task.lms.service.BookService;
@@ -9,6 +10,8 @@ import com.task.lms.service.ReviewService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
 public class BookController {
 
     BookService bookService;
-    private ReviewService reviewService;
+   ReviewService reviewService;
 
     public BookController(BookService bookService, ReviewService reviewService) {
         this.bookService = bookService;
@@ -36,11 +39,17 @@ public class BookController {
         Book book = bookService.getABook(id);
         if (book != null) {
             try {
+                Map<String, Object> rating = reviewService.getSingleBookRating(book.getBookId());
+                List<ReviewDto> reviews = reviewService.getAllReviewByBook(book.getBookId());
+                float overallRating = Float.parseFloat(rating.get("overall_rating").toString());
+                Integer numRatings = Integer.parseInt(rating.get("num_reviews").toString());
+                BookWithReviewDto bookWithReviewDto = new BookWithReviewDto(book, overallRating, numRatings);
+                bookWithReviewDto.setReviews(reviews);
                 ResponseWrapper response = new ResponseWrapper();
                 response.setStatusCode(HttpStatus.OK.value());
                 response.setMessage("Book retrieved successfully");
                 response.setSuccess(true);
-                response.setResponse(book);
+                response.setResponse(bookWithReviewDto);
                 return ResponseEntity.ok(response);
             }catch(CustomException e){
                 throw new CustomException(e.getMessage());
@@ -54,18 +63,22 @@ public class BookController {
     }
     @GetMapping("/book")
     private ResponseEntity<ResponseWrapper> getAllBook(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
-        BookWithReviewDto bookWithReviewDto = bookService.getAllBook(pageNo);
-        List<Book> books = bookWithReviewDto.getBooks();
+        Page<Book> bookPage = bookService.getAllBook(pageNo);
+        List<Book> books = bookPage.getContent();
+        long totalBooks = bookPage.getTotalElements();
+        int totalPages = bookPage.getTotalPages();
         List<Integer> bookIds = books.stream().map(Book::getBookId).collect(Collectors.toList());
 
         List<Map<String, Object>> ratings = reviewService.getRatingOfBooks(bookIds);
 
-        List<BookWithReviewDto> bookWithReviewDtos = bookService.combineBooksWithReviews(books, ratings);
+        List<BookWithReviewDto> bookWithReviewDto = bookService.combineBooksWithReviews(books, ratings);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Books retrieved successfully");
         response.setSuccess(true);
-        response.setResponse(bookWithReviewDtos);
+        response.setTotalItems(totalBooks);
+        response.setTotalPages(totalPages);
+        response.setResponse(bookWithReviewDto);
         return ResponseEntity.ok(response);
     }
 

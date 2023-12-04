@@ -37,15 +37,9 @@ public class BookService {
             return optionalBook.orElse(null);
     }
     //get all book
-    public BookWithReviewDto getAllBook(int pageNo) {
+    public Page<Book> getAllBook(int pageNo) {
         PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
-        Page<Book> bookPage = bookRepository.findAll(pageable);
-
-        List<Book> books = bookPage.getContent();
-        long totalBooks = bookPage.getTotalElements();
-        long totalPages = bookPage.getTotalPages();
-
-        return new BookWithReviewDto(books, totalBooks, totalPages);
+        return bookRepository.findAll(pageable);
     }
 
     //update book
