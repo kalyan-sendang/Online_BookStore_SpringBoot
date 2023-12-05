@@ -38,11 +38,11 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public ResponseEntity<ResponseWrapper> addOrder(HttpServletRequest request){
+    public ResponseEntity<ResponseWrapper> addOrder(@RequestBody String shippingAddress, HttpServletRequest request){
         Integer userId = (Integer) request.getAttribute("userId");
         ResponseWrapper response = new ResponseWrapper();
         try{
-            List<Order> orderList = orderService.placeOrder(userId);
+            List<Order> orderList = orderService.placeOrder(userId, shippingAddress);
             if(orderList == null){
                 response.setStatusCode(HttpStatus.NO_CONTENT.value());
                 response.setMessage("No Order to place!!!");

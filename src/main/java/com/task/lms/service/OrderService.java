@@ -28,7 +28,7 @@ public class OrderService {
         return orderRepository.getOrdersByUser(id);
     }
 
-    public List<Order>placeOrder(Integer id){
+    public List<Order>placeOrder(Integer id, String shippingAddress){
         List<Cart> cartList = cartRepository.findAllBooksByUser(id);
         if(cartList == null){
             return null;
@@ -36,6 +36,7 @@ public class OrderService {
             List<Order>orderList = new ArrayList<>();
             for(Cart cart : cartList){
                 Order order = new Order(cart);
+                order.setShippingAddress(shippingAddress);
                 orderList.add(order);
             }
             cartRepository.deleteAll(cartList);

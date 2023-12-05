@@ -42,6 +42,9 @@ public class Order {
     @Column(name = "shipping_time")
     private LocalDateTime shippedTime;
 
+    @Column(name = "shipping_address")
+    private String shippingAddress;
+
     public Order(Cart cart) {
         this.user = cart.getUser();
         this.book = cart.getBook();
@@ -51,7 +54,7 @@ public class Order {
         this.status = "processing";
         this.shippedTime = LocalDateTime.now();
     }
-    public Order(User user, Book book, int qty, double totalPrice, String status, LocalDateTime shippedTime) {
+    public Order(User user, Book book, int qty, double totalPrice, String status, LocalDateTime shippedTime, String shippingAddress) {
         this.user = user;
         this.book = book;
         this.qty = qty;
@@ -60,6 +63,7 @@ public class Order {
         this.date =  LocalDateTime.now();
         this.status = status;
         this.shippedTime = shippedTime;
+        this.shippingAddress = shippingAddress;
     }
 
     public Order() {
