@@ -1,5 +1,6 @@
 package com.task.lms.controller;
 
+import com.task.lms.dto.ReqReviewDto;
 import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Review;
 
@@ -27,7 +28,7 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @GetMapping("/review/{userId}")
+   /* @GetMapping("/review/{userId}")
     public ResponseEntity<ResponseWrapper>getSingleReview(@PathVariable Integer userId){
         Review review = reviewService.getReviewByUserId(userId);
         ResponseWrapper response = new ResponseWrapper();
@@ -47,22 +48,21 @@ public class ReviewController {
         response.setSuccess(true);
         response.setResponse(listReview);
         return ResponseEntity.ok(response);
-    }
+    }*/
 
     @PostMapping("/review")
-    public ResponseEntity<ResponseWrapper> addReview(@Valid @RequestBody ReviewDto ReviewDto, HttpServletRequest request){
+    public ResponseEntity<ResponseWrapper> addReview(@RequestBody ReqReviewDto reqReviewDto, HttpServletRequest request){
         Integer userId = (Integer) request.getAttribute("userId");
+        Review prevReview = reviewService.getReviewByUserIdAndBookId(userId, reqReviewDto.getBookId());
 
-        Review prevReview = reviewService.getReviewByUserId(userId);
         ResponseWrapper response = new ResponseWrapper();
         if(prevReview == null){
-            ReviewDto newReview = reviewService.addReview(ReviewDto, userId);
-
+            ReviewDto newReview = reviewService.addReview(reqReviewDto, userId);
             if(newReview == null){
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
-                response.setMessage("Error Error Error");
+                response.setMessage("Error adding Error");
                 response.setSuccess(false);
-                response.setResponse(prevReview);
+                response.setResponse(null);
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             }else{
                 response.setStatusCode(HttpStatus.OK.value());
@@ -72,7 +72,8 @@ public class ReviewController {
                 return ResponseEntity.ok(response);
             }
         }else{
-            return reviewService.editReview(ReviewDto, userId, prevReview.getReviewId());
+            System.out.println("asfsa "+ prevReview.getReviewId());
+            return reviewService.editReview(reqReviewDto, userId, prevReview.getReviewId());
         }
     }
 }

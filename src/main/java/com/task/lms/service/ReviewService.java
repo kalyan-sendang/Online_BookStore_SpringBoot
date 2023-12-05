@@ -1,5 +1,6 @@
 package com.task.lms.service;
 
+import com.task.lms.dto.ReqReviewDto;
 import com.task.lms.dto.ReviewDto;
 
 import com.task.lms.model.Book;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 @Service
@@ -28,8 +30,8 @@ public class ReviewService {
         this.userRepository = userRepository;
     }
 
-    public Review getReviewByUserId(Integer userId){
-        return reviewRepository.getReviewByUserId(userId);
+    public Review getReviewByUserIdAndBookId(Integer userId, Integer bookId){
+        return reviewRepository.getReviewByUserIdAndBookId(userId, bookId);
     }
 
     public List<ReviewDto> getAllReviewByBook(Integer bookId){
@@ -42,13 +44,13 @@ public class ReviewService {
         return reviewDtoList;
     }
 
-    public ReviewDto addReview(ReviewDto reviewDto, Integer userId) {
+    public ReviewDto addReview(ReqReviewDto reqReviewDto, Integer userId) {
         Book book = new Book();
-        book.setBookId(reviewDto.getBookId());
+        book.setBookId(reqReviewDto.getBookId());
 
         Optional<User> newUser = Optional.ofNullable(userRepository.findById(userId).orElse(null));
             User user = newUser.get();
-            Review newReview = new Review(user, book, reviewDto.getRating(), reviewDto.getComment());
+            Review newReview = new Review(user, book, reqReviewDto.getRating(), reqReviewDto.getComment());
             try {
                 Review review = reviewRepository.save(newReview);
                 return new ReviewDto(review);
@@ -58,24 +60,24 @@ public class ReviewService {
 
     }
 
-    public ResponseEntity<ResponseWrapper> editReview(ReviewDto reviewDto, Integer userId, Integer reviewId) {
+    public ResponseEntity<ResponseWrapper> editReview(ReqReviewDto reqReviewDto, Integer userId, Integer reviewId) {
         Optional<Review> prevReview = reviewRepository.findById(reviewId);
         ResponseWrapper response = new ResponseWrapper();
-        if (!prevReview.isPresent()) {
+        if (prevReview.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("Cannot found review");
             response.setStatusCode(HttpStatus.NOT_FOUND.value());
             return ResponseEntity.ok(response);
         } else {
             Review newReview = prevReview.get();
-            if (!newReview.getReviewId().equals(userId)) {
+            if (!newReview.getUser().getUserId().equals(userId)) {
                 response.setSuccess(false);
                 response.setMessage("Cannot found review");
                 response.setStatusCode(HttpStatus.NOT_FOUND.value());
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
             } else {
-                newReview.setRating(reviewDto.getRating());
-                newReview.setComment(reviewDto.getComment());
+                newReview.setRating(reqReviewDto.getRating());
+                newReview.setComment(reqReviewDto.getComment());
 
                 Review updatedReview =  reviewRepository.save(newReview);
                 ReviewDto newReviewDto = new ReviewDto(updatedReview);

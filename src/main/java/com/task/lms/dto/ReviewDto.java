@@ -13,13 +13,9 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewDto {
 
-    @Min(value = 0, message = "Invalid book id")
+
     private Integer reviewId;
-
     private Integer bookId;
-
-    @Min(value = 0, message = "Rating should be greater than 0")
-    @Max(value = 5, message = "Rating should be less than 6")
     private Float rating;
 
     private String comment;
@@ -30,11 +26,6 @@ public class ReviewDto {
 
     private LocalDateTime date;
 
-    public ReviewDto(Integer bookId, Float rating, String comment) {
-        this.bookId = bookId;
-        this.rating = rating;
-        this.comment = comment;
-    }
     public ReviewDto(Review review){
         this.reviewId = review.getReviewId();
         this.bookId = review.getBook().getBookId();
