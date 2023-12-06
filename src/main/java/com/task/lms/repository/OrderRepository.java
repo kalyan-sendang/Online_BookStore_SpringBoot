@@ -1,6 +1,7 @@
 package com.task.lms.repository;
 
 import com.task.lms.model.Order;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,4 +12,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> getOrdersByUser(Integer userId);
     @Query(value = "SELECT * FROM orders Where order_id = :orderId", nativeQuery = true)
     Order getOrderByOrderId(Integer orderId);
+
+//    @Query(value = "SELECT * FROM orders", nativeQuery = true)
+//    List<Order> getAllOrders(Sort orderId);
 }

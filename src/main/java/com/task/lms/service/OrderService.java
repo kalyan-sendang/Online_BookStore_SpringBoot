@@ -4,6 +4,8 @@ import com.task.lms.model.Cart;
 import com.task.lms.model.Order;
 import com.task.lms.repository.CartRepository;
 import com.task.lms.repository.OrderRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,9 +16,9 @@ import java.util.Optional;
 @Service
 public class OrderService {
 
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
 
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
     public OrderService(OrderRepository orderRepository, CartRepository cartRepository) {
         this.orderRepository = orderRepository;
@@ -28,6 +30,11 @@ public class OrderService {
         return orderRepository.getOrdersByUser(id);
     }
 
+    //Only for admin
+    public List<Order>getAllOrder(){
+        return orderRepository.findAll(Sort.by("OrderId"));
+    }
+    @Transactional
     public List<Order>placeOrder(Integer id, String shippingAddress){
         List<Cart> cartList = cartRepository.findAllBooksByUser(id);
         if(cartList == null){

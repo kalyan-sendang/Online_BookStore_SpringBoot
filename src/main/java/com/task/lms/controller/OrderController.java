@@ -27,7 +27,7 @@ public class OrderController {
 
     @GetMapping("/order")
     public ResponseEntity<ResponseWrapper> getAllOrdersByUserId(HttpServletRequest request){
-        Integer userId = (Integer) request.getAttribute("userId");System.out.println(userId);
+        Integer userId = (Integer) request.getAttribute("userId");
         List<Order> orderList = orderService.getAllOrdersByUserId(userId);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
@@ -43,7 +43,7 @@ public class OrderController {
         ResponseWrapper response = new ResponseWrapper();
         try{
             List<Order> orderList = orderService.placeOrder(userId, shippingAddress);
-            if(orderList == null){
+            if(orderList.isEmpty()){
                 response.setStatusCode(HttpStatus.NO_CONTENT.value());
                 response.setMessage("No Order to place!!!");
                 response.setResponse(null);
@@ -59,20 +59,5 @@ public class OrderController {
             throw new CustomException(e.getMessage());
         }
     }
-    @PutMapping("/order/{orderId}")
-    public ResponseEntity<ResponseWrapper> updateOrder(@PathVariable Integer orderId, @RequestBody String status){
-        System.out.println("ASdfasfasdfa");
-        Order order = orderService.updateOrder(orderId, status);
-        ResponseWrapper response = new ResponseWrapper();
-        try{
-            response.setStatusCode(HttpStatus.OK.value());
-            response.setMessage("Order updated successfully");
-            response.setSuccess(true);
-            response.setResponse(order);
-            return ResponseEntity.ok(response);
-        }catch(CustomException e){
-            throw new CustomException(e.getMessage());
-        }
 
-    }
 }

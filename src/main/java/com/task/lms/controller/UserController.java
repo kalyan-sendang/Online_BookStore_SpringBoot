@@ -31,11 +31,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
     @PostMapping("/user")
     private ResponseEntity<ResponseWrapper> insertUser(@Valid @RequestBody User user) throws CustomException {
         try {
@@ -70,6 +65,7 @@ public class UserController {
 
     }
 
+/*
     @PutMapping("/user/{id}")
     private ResponseEntity<ResponseWrapper> updateUser( @PathVariable("id") int id,@Valid @RequestBody User user) {
         UserDTO updatedUserDTO = userService.update(id, user);
@@ -86,35 +82,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+*/
 
-    @PostMapping("/user/login")
-    public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        System.out.println("Not working");
-        try {
-
-            // Attempt to authenticate the user using the provided credentials
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUserName(), authRequest.getPassword()));
-
-            // If the authentication is successful, generate a JWT token
-            if (authentication.isAuthenticated()) {
-                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-                User user = userService.getUserByUsername(userDetails.getUsername());
-                String token = jwtService.generateToken(user);
-                final Cookie cookie = new Cookie("auth", token);
-                cookie.setSecure(false);
-                cookie.setHttpOnly(true);
-                cookie.setMaxAge(50400);
-                cookie.setPath("/api");
-                response.addCookie(cookie);
-
-                return ResponseEntity.ok().body(new TokenResponse(token));
-            } else {
-                throw new CustomException("Invalid credentials");
-            }
-        } catch (CustomException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-    }
 
     @GetMapping("/userprofile")
     public ResponseEntity<UserProfile> userProfile(HttpServletRequest request){
