@@ -76,7 +76,7 @@ public class UserService{
 
             // Update properties of the existing user with values from the updated user
             existingUser.setUserId(id);
-            existingUser.setPassword(updatedUser.getPassword());
+            existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             existingUser.setUserName(updatedUser.getUserName());
             existingUser.setRole(updatedUser.getRole());
             existingUser.setEmail(updatedUser.getEmail());

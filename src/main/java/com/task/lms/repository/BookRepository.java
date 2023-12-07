@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
-public interface BookRepository extends JpaRepository<Book, Integer> {
-    Page<Book> findAllByTitleContaining(String name, Pageable pageable);
 
-    Page<Book> findAll(Pageable pageable);
+public interface BookRepository extends JpaRepository<Book, Integer> {
+
+
+    Page<Book> findAllByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrGenreContainingIgnoreCaseOrDetailContainingIgnoreCase(String title,String author,String genre,String detail, Pageable pageable);
+
 
 }

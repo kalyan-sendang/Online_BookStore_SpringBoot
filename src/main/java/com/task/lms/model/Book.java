@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
- @Getter
+
+import java.util.List;
+
+@Getter
  @Setter
  @Entity
  @Table(name = "Book" )
@@ -25,5 +28,12 @@ public class Book {
     private Integer qty;
     @Column(length = 200)
      private String detail;
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<Cart> carts;
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<Order> orders;
+    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+    private List<Review> reviews;
+
 
 }

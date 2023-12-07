@@ -1,26 +1,20 @@
 package com.task.lms.controller;
 
-import com.task.lms.dto.BookResDto;
 import com.task.lms.dto.BookWithReviewDto;
 import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Book;
-import com.task.lms.model.User;
 import com.task.lms.service.BookService;
 import com.task.lms.service.ReviewService;
 import com.task.lms.utils.CustomException;
+import com.task.lms.utils.RatingComparator;
 import com.task.lms.utils.ResponseWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 @Controller
 @RestController
@@ -63,8 +57,12 @@ public class BookController {
         }
     }
     @GetMapping("/book")
-    private ResponseEntity<ResponseWrapper> getAllBook(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
-        Page<Book> bookPage = bookService.getAllBook(pageNo);
+    private ResponseEntity<ResponseWrapper> getAllBook(@RequestParam(name = "query", defaultValue = "", required = false) String title,
+                                                       @RequestParam(name = "query", defaultValue = "", required = false) String author,
+                                                       @RequestParam(name = "query", defaultValue = "", required = false) String genre,
+                                                       @RequestParam(name = "query", defaultValue = "", required = false) String detail,
+                                                       @RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
+        Page<Book> bookPage = bookService.getAllBooks(title,author,genre, detail,pageNo);
         List<Book> books = bookPage.getContent();
         long totalBooks = bookPage.getTotalElements();
         int totalPages = bookPage.getTotalPages();
@@ -73,6 +71,8 @@ public class BookController {
         List<Map<String, Object>> ratings = reviewService.getRatingOfBooks(bookIds);
 
         List<BookWithReviewDto> bookWithReviewDto = bookService.combineBooksWithReviews(books, ratings);
+        bookWithReviewDto.sort(new RatingComparator());
+
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
         response.setMessage("Books retrieved successfully");

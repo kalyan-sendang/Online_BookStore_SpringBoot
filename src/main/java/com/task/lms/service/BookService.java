@@ -1,6 +1,5 @@
 package com.task.lms.service;
 
-import com.task.lms.dto.BookResDto;
 import com.task.lms.dto.BookWithReviewDto;
 import com.task.lms.model.Book;
 import com.task.lms.model.User;
@@ -37,12 +36,11 @@ public class BookService {
             return optionalBook.orElse(null);
     }
     //get all book
-    public Page<Book> getAllBook(int pageNo) {
+
+    public Page<Book> getAllBooks(String title,String author, String genre, String detail,int pageNo) {
         PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
-        return bookRepository.findAll(pageable);
+        return bookRepository.findAllByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrGenreContainingIgnoreCaseOrDetailContainingIgnoreCase( title, author, genre,detail, pageable);
     }
-
-
 
     //update book
     public Book updateBook(int id, Book updatedBook) {
