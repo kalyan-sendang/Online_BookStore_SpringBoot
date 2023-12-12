@@ -42,7 +42,6 @@ public class AuthController {
 
     @PostMapping("/user/login")
     public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        System.out.println("Not working");
         try {
 
             // Attempt to authenticate the user using the provided credentials

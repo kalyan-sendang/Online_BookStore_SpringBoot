@@ -119,12 +119,12 @@ public class AdminController {
 
 
     @DeleteMapping("/book/{bookId}")
-    private ResponseEntity<ResponseWrapper> deleteBook(@PathVariable("bookId")int id){
+    public ResponseEntity<ResponseWrapper> deleteBook(@PathVariable("bookId")int id){
         bookService.deleteBook(id);
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
         response.setSuccess(true);
-        response.setMessage("User deleted successfully");
+        response.setMessage("Book deleted successfully");
         return ResponseEntity.ok(response);
     }
 

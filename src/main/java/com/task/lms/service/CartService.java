@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final BookRepository bookRepository;
-    @Autowired
-    public CartService(CartRepository cartRepository, BookRepository bookRepository) {
+
+    public CartService(CartRepository cartRepository) {
         this.cartRepository = cartRepository;
-        this.bookRepository =bookRepository;
     }
 
     public Cart checkBookInCart(Integer userId, Integer bookId){
@@ -32,8 +30,9 @@ public class CartService {
     public List<CartDto> getBookInCart(Integer userId) {
         List<Cart> carts = cartRepository.findAllBooksByUser(userId);
         return carts.stream()
+                .filter(cart -> cart.getBook() != null)
                 .map(cart -> new CartDto(cart.getCartId(), cart.getQty(), cart.getBook()))
-                .collect(Collectors.toList());
+                .toList();
 
     }
 

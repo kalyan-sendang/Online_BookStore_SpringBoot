@@ -25,6 +25,7 @@ public class BookService {
     BookRepository bookRepository;
 
     int pageSize = 4;
+
     //insert Book
     public Book insertBook(Book book) {
         return bookRepository.save(book);
@@ -33,13 +34,13 @@ public class BookService {
     //get a book
     public Book getABook(int id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
-            return optionalBook.orElse(null);
+        return optionalBook.orElse(null);
     }
     //get all book
 
-    public Page<Book> getAllBooks(String title,String author, String genre, String detail,int pageNo) {
-        PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
-        return bookRepository.findAllByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrGenreContainingIgnoreCaseOrDetailContainingIgnoreCase( title, author, genre,detail, pageable);
+    public Page<Book> getAllBooks(String title, String author, String genre, String detail, int pageNo) {
+        PageRequest pageable = PageRequest.of(pageNo - 1, pageSize);
+        return bookRepository.searchBooks(title, author, genre, detail, pageable);
     }
 
     //update book
