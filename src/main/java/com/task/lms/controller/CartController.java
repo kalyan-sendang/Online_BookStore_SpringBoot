@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Controller
 @RestController
 @RequestMapping("/api")
@@ -31,81 +32,76 @@ public class CartController {
     }
 
     @GetMapping("/cart")
-    private ResponseEntity<ResponseWrapper> getBookInCart(HttpServletRequest request){
-       Integer id = (Integer) request.getAttribute("userId");
+    public ResponseEntity<ResponseWrapper> getBookInCart(HttpServletRequest request) {
+        Integer id = (Integer) request.getAttribute("userId");
 
-        if(id != null) {
-            List<CartDto>cart = cartService.getBookInCart(id);
+        if (id != null) {
+            List<CartDto> cart = cartService.getBookInCart(id);
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.OK.value());
             response.setMessage("Carts retrieved successfully");
             response.setSuccess(true);
             response.setResponse(cart);
             return ResponseEntity.ok(response);
-        }
-        else{
-            throw new CustomException("Database is empty");
+        } else {
+            throw new CustomException("User with given username is not present");
         }
     }
 
     @PostMapping("/cart")
-    private ResponseEntity<ResponseWrapper> addToCart(@RequestBody Integer bookId,   HttpServletRequest request) throws CustomException{
+    public ResponseEntity<ResponseWrapper> addToCart(@RequestBody Integer bookId, HttpServletRequest request) throws CustomException {
         try {
             Integer userId = (Integer) request.getAttribute("userId");
-            if(cartService.checkBookInCart(userId, bookId)!= null){
+            if (cartService.checkBookInCart(userId, bookId) != null) {
                 ResponseWrapper response = new ResponseWrapper();
                 response.setStatusCode(HttpStatus.CREATED.value());
                 response.setMessage("Book is already present in Cart");
                 response.setSuccess(false);
                 response.setResponse(null);
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
-            }else{
+            } else {
+                Cart newCart = new Cart();
+                Book book = new Book();
+                User user = new User();
+                book.setBookId(bookId);
 
-            Cart newCart = new Cart();
-            Book book = new Book();
-            User user = new User();
-
-
-            book.setBookId(bookId);
-
-            user.setUserId(userId);
+                user.setUserId(userId);
 
 
-            newCart.setQty(1);
-            newCart.setBook(book);
-            newCart.setUser(user);
-            ResponseWrapper response = new ResponseWrapper();
-            response.setStatusCode(HttpStatus.CREATED.value());
-            response.setMessage("Cart created successfully");
+                newCart.setQty(1);
+                newCart.setBook(book);
+                newCart.setUser(user);
+                ResponseWrapper response = new ResponseWrapper();
+                response.setStatusCode(HttpStatus.CREATED.value());
+                response.setMessage("Cart created successfully");
                 response.setSuccess(true);
-            response.setResponse(cartService.addBookToCart(newCart));
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+                response.setResponse(cartService.addBookToCart(newCart));
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
             }
-        }catch(CustomException e) {
+        } catch (CustomException e) {
             throw new CustomException(e.getMessage());
         }
-        }
+    }
 
     @PutMapping("/cart/{cartId}")
-    public ResponseEntity<ResponseWrapper> editCart(@PathVariable Integer cartId, @RequestBody Integer qty,  HttpServletRequest request) {
+    public ResponseEntity<ResponseWrapper> editCart(@PathVariable Integer cartId, @RequestBody Integer qty, HttpServletRequest request) {
         try {
             Integer userId = (Integer) request.getAttribute("userId");
-            CartDto newCardDto =cartService.updateCart(cartId, qty, userId);
+            CartDto newCardDto = cartService.updateCart(cartId, qty, userId);
             ResponseWrapper response = new ResponseWrapper();
             response.setStatusCode(HttpStatus.CREATED.value());
             response.setMessage("Cart updated successfully");
             response.setSuccess(true);
             response.setResponse(newCardDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }
-        catch(CustomException e){
+        } catch (CustomException e) {
             throw new CustomException(e.getMessage());
         }
     }
 
 
     @DeleteMapping("/cart/{cartId}")
-    public ResponseEntity<ResponseWrapper> deleteCart(@PathVariable Integer cartId, HttpServletRequest request){
+    public ResponseEntity<ResponseWrapper> deleteCart(@PathVariable Integer cartId, HttpServletRequest request) {
         Integer userId = (Integer) request.getAttribute("userId");
         cartService.deleteCart(cartId, userId);
         ResponseWrapper response = new ResponseWrapper();

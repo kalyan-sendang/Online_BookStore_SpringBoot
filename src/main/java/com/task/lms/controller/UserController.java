@@ -91,6 +91,24 @@ public class UserController {
         return ResponseEntity.ok(userProfile);
     }
 
+    @PutMapping("/userprofile")
+    private ResponseEntity<ResponseWrapper> updateUserProfile( HttpServletRequest request,@Valid @RequestBody User user) {
+        Integer userId = (Integer) request.getAttribute("userId");
+        UserDTO updatedUserDTO = userService.update(userId, user);
+        ResponseWrapper response = new ResponseWrapper();
+        if (updatedUserDTO.getUserId() != null) {
+            response.setStatusCode(HttpStatus.OK.value());
+            response.setMessage("User updated successfully");
+            response.setSuccess(true);
+            response.setResponse(updatedUserDTO);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatusCode(HttpStatus.NOT_FOUND.value());
+            response.setMessage("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
 
 }
 

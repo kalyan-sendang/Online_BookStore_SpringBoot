@@ -4,11 +4,12 @@ import com.task.lms.model.Book;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Getter
 @Setter
-public class BookWithReviewDto {
+public class BookWithReviewDto{
     private Integer bookId;
     private String title;
     private String detail;
@@ -35,9 +36,7 @@ public class BookWithReviewDto {
         this.numberOfReviews = numberOfReviews;
     }
 
-//    public BookWithReviewDto(List<Book> books ,long totalItems, long totalPages) {
-//        this.books = books;
-//        this.totalItems = totalItems;
-//        this.totalPages = totalPages;
-//    }
+    public BookWithReviewDto() {
+
+    }
 }

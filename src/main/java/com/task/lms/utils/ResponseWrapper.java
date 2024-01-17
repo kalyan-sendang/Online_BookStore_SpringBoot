@@ -8,37 +8,20 @@ public class ResponseWrapper {
     private long totalItems;
     private int totalPages;
 
-    public long getTotalItems() {
-        return totalItems;
-    }
-
-    public void setTotalItems(long totalItems) {
-        this.totalItems = totalItems;
-    }
-
-    public int getTotalPages() {
-        return totalPages;
-    }
-
-    public void setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
     private Object response;
 
-//    public ResponseWrapper(int statusCode, String message, Object response) {
-//        this.statusCode = statusCode;
-//        this.message = message;
-//        this.response = response;
-//    }
+
+    public ResponseWrapper() {
+    }
+
+    public ResponseWrapper(int statusCode, String message, boolean success, long totalItems, int totalPages, Object response) {
+        this.statusCode = statusCode;
+        this.message = message;
+        this.success = success;
+        this.totalItems = totalItems;
+        this.totalPages = totalPages;
+        this.response = response;
+    }
 
     public int getStatusCode() {
         return statusCode;
@@ -54,6 +37,30 @@ public class ResponseWrapper {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public long getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(long totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
     }
 
     public Object getResponse() {

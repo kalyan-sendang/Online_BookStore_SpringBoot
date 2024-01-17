@@ -1,17 +1,23 @@
 package com.task.lms.model;
 
+import com.task.lms.dto.CartDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
- @Getter
+
+import java.util.List;
+
+@Getter
  @Setter
  @Entity
  @Table(name = "Book" )
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "book_id")
     private Integer bookId;
+
     @Column
     private String author;
     @Column
@@ -25,5 +31,12 @@ public class Book {
     private Integer qty;
     @Column(length = 200)
      private String detail;
+//    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+//    private List<Cart> carts;
+//    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+//    private List<Order> orders;
+//    @OneToMany(mappedBy = "book", cascade = CascadeType.REMOVE)
+//    private List<Review> reviews;
+
 
 }

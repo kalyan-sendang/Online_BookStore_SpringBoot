@@ -130,7 +130,7 @@ public class AdminController {
         ResponseWrapper response = new ResponseWrapper();
         response.setStatusCode(HttpStatus.OK.value());
         response.setSuccess(true);
-        response.setMessage("User deleted successfully");
+        response.setMessage("Book deleted successfully");
         return ResponseEntity.ok(response);
     }
 

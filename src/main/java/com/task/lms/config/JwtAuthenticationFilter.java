@@ -7,7 +7,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +20,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public  class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
     private final JwtService jwtService;
 
-    @Autowired
     private CustomUserDetailsService userDetailsService;
 
     @Override
@@ -43,7 +40,6 @@ public  class JwtAuthenticationFilter extends OncePerRequestFilter {
         //to extract the username from jwt token
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-            System.out.println("userDetails"+ userDetails);
             if (jwtService.isTokenValid(jwt, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,

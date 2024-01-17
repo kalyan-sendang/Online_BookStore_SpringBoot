@@ -1,21 +1,14 @@
 package com.task.lms.service;
 
-import com.task.lms.dto.BookResDto;
 import com.task.lms.dto.BookWithReviewDto;
 import com.task.lms.model.Book;
-import com.task.lms.model.User;
 import com.task.lms.repository.BookRepository;
 import com.task.lms.utils.CustomException;
-import com.task.lms.utils.ResponseWrapper;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +20,7 @@ public class BookService {
     BookRepository bookRepository;
 
     int pageSize = 4;
+
     //insert Book
     public Book insertBook(Book book) {
         return bookRepository.save(book);
@@ -35,7 +29,7 @@ public class BookService {
     //get a book
     public Book getABook(int id) {
         Optional<Book> optionalBook = bookRepository.findById(id);
-            return optionalBook.orElse(null);
+        return optionalBook.orElse(null);
     }
     //get all book
     public Page<Book> getAllBook(int pageNo, String title, String author, String genre, Float price ) {
@@ -45,9 +39,8 @@ public class BookService {
     public Page<Book> getAllBooks(int pageNo) {
         PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
         return bookRepository.findAll(pageable);
+
     }
-
-
 
     //update book
     public Book updateBook(int id, Book updatedBook) {

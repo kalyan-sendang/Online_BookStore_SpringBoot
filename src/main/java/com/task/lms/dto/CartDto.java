@@ -1,6 +1,8 @@
 package com.task.lms.dto;
 
 import com.task.lms.model.Book;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 

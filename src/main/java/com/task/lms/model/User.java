@@ -5,12 +5,18 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -39,10 +45,14 @@ public class User {
     @NotBlank(message = "Role is mandatory")
     @Pattern(regexp = "^(USER|INTERN|ADMIN)$" ,message = "Invalid Roles")
     private String role;
-/*    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<Role> roles;*/
+
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<Cart> carts;
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<Order> orders;
+//
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<Review> reviews;
 
 }

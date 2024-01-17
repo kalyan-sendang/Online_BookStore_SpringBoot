@@ -1,7 +1,10 @@
 package com.task.lms.model;
 
-import com.task.lms.model.User;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class TokenResponse {
     private  String token;
 
@@ -9,19 +12,8 @@ public class TokenResponse {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     public void setToken(String token) {
         this.token = token;
     }
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
 
 }
