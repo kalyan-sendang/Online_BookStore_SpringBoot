@@ -7,6 +7,7 @@ import com.task.lms.service.CartService;
 import com.task.lms.dto.CartDto;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import java.util.List;
 @Controller
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Cart Controller", description = "This is cart api for carts")
+
 public class CartController {
 
     private final CartService cartService;

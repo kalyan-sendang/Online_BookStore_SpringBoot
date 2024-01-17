@@ -1,25 +1,16 @@
 package com.task.lms.controller;
 
-import com.task.lms.service.JwtService;
+import com.task.lms.dto.UserDTO;
 import com.task.lms.model.User;
 import com.task.lms.model.UserProfile;
-import com.task.lms.model.AuthRequest;
-import com.task.lms.model.TokenResponse;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
-import com.task.lms.dto.UserDTO;
-import jakarta.servlet.http.Cookie;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +18,17 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RestController
 @RequestMapping("/api")
+@Tag(name = "User Controller", description = "This is user api for user")
+
 public class UserController {
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/user")
-    private ResponseEntity<ResponseWrapper> insertUser(@Valid @RequestBody User user) throws CustomException {
+    public ResponseEntity<ResponseWrapper> insertUser(@Valid @RequestBody User user) throws CustomException {
         try {
             UserDTO createdUserDTO = userService.insertUser(user);
             ResponseWrapper response = new ResponseWrapper();
@@ -41,14 +37,14 @@ public class UserController {
             response.setSuccess(true);
             response.setResponse(createdUserDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch(CustomException e) {
+        } catch (CustomException e) {
             throw new CustomException(e.getMessage());
         }
     }
 
 
     @GetMapping("/user/{id}")
-    private ResponseEntity<ResponseWrapper> getUser(@PathVariable("id") int id) {
+    public ResponseEntity<ResponseWrapper> getUser(@PathVariable("id") int id) {
         UserDTO userDTO = userService.getUserById(id);
         ResponseWrapper response = new ResponseWrapper();
         if (userDTO != null) {
@@ -86,13 +82,13 @@ public class UserController {
 
 
     @GetMapping("/userprofile")
-    public ResponseEntity<UserProfile> userProfile(HttpServletRequest request){
+    public ResponseEntity<UserProfile> userProfile(HttpServletRequest request) {
         Integer userId = (Integer) request.getAttribute("userId");
         String userName = (String) request.getAttribute("userName");
         String email = (String) request.getAttribute("email");
         String role = (String) request.getAttribute("role");
-            UserProfile userProfile = new UserProfile(userId, userName, email, role);
-            return ResponseEntity.ok(userProfile);
+        UserProfile userProfile = new UserProfile(userId, userName, email, role);
+        return ResponseEntity.ok(userProfile);
     }
 
 

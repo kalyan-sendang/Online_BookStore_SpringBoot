@@ -2,11 +2,8 @@ package com.task.lms.config;
 
 
 import com.task.lms.service.CustomUserDetailsService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -25,11 +22,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
+
     private final JwtAuthenticationFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     // User Creation
     @Bean
@@ -43,13 +43,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(configurer ->
                                 configurer
                                         .requestMatchers("/api/auth/**").permitAll()
-                                        .requestMatchers("/api/admin/**").permitAll()
+                                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                         .requestMatchers("/api/user/**").permitAll()
                                         .requestMatchers("/api/book/**").permitAll()
                                         .requestMatchers("api/cart/**").permitAll()
                                         .requestMatchers("/api/userprofile").permitAll()
                                         .requestMatchers("api/review/**").permitAll()
                                         .requestMatchers("api/order/**").permitAll()
+                                        .requestMatchers("swagger-ui/**").permitAll()
+                                        .requestMatchers("v3/**").permitAll()
 /*                       .requestMatchers(HttpMethod.GET, "api/user").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.GET, "api/user/**").hasAnyRole("USER","ADMIN")
                         .requestMatchers(HttpMethod.POST, "api/user").hasRole("ADMIN")

@@ -6,6 +6,7 @@ import com.task.lms.model.User;
 import com.task.lms.service.JwtService;
 import com.task.lms.service.UserService;
 import com.task.lms.utils.CustomException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Controller
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Auth Controller", description = "This is auth api for authentication")
+
 public class AuthController {
 
     UserService userService;
@@ -42,7 +45,6 @@ public class AuthController {
 
     @PostMapping("/user/login")
     public ResponseEntity<TokenResponse> authenticateAndGetToken(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
-        System.out.println("Not working");
         try {
 
             // Attempt to authenticate the user using the provided credentials

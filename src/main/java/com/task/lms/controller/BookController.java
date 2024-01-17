@@ -1,30 +1,26 @@
 package com.task.lms.controller;
 
-import com.task.lms.dto.BookResDto;
 import com.task.lms.dto.BookWithReviewDto;
 import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Book;
-import com.task.lms.model.User;
 import com.task.lms.service.BookService;
 import com.task.lms.service.ReviewService;
 import com.task.lms.utils.CustomException;
 import com.task.lms.utils.ResponseWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 @Controller
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Book Controller", description = "This is book api for books")
+
 public class BookController {
 
     BookService bookService;
@@ -36,7 +32,7 @@ public class BookController {
     }
 
     @GetMapping("/book/{bookId}")
-    private ResponseEntity<ResponseWrapper> getBook(@PathVariable("bookId")int id){
+    public ResponseEntity<ResponseWrapper> getBook(@PathVariable("bookId")int id){
         Book book = bookService.getABook(id);
         if (book != null) {
             try {
@@ -63,12 +59,26 @@ public class BookController {
         }
     }
     @GetMapping("/book")
-    private ResponseEntity<ResponseWrapper> getAllBook(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo) {
-        Page<Book> bookPage = bookService.getAllBook(pageNo);
+    public ResponseEntity<ResponseWrapper> getAllBook(@RequestParam(name = "pageNo", defaultValue = "1") int pageNo,
+                                                       @RequestParam(required = false) String title,
+                                                       @RequestParam(required = false) String author,
+                                                       @RequestParam(required = false)String genre,
+                                                       @RequestParam(required = false)Float price) {
+        Page<Book> bookPage;
+        if(title == null || author == null || genre== null || price == null){
+            bookPage = bookService.getAllBooks(pageNo);
+        }else{
+            bookPage = bookService.getAllBook(pageNo, title, author, genre, price);
+        }
+        return getResponseWrapperResponseEntity(bookPage);
+
+
+    }
+    public ResponseEntity<ResponseWrapper> getResponseWrapperResponseEntity(Page<Book> bookPage) {
         List<Book> books = bookPage.getContent();
         long totalBooks = bookPage.getTotalElements();
         int totalPages = bookPage.getTotalPages();
-        List<Integer> bookIds = books.stream().map(Book::getBookId).collect(Collectors.toList());
+        List<Integer> bookIds = books.stream().map(Book::getBookId).toList();
 
         List<Map<String, Object>> ratings = reviewService.getRatingOfBooks(bookIds);
 

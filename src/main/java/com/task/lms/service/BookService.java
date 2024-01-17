@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,11 @@ public class BookService {
             return optionalBook.orElse(null);
     }
     //get all book
-    public Page<Book> getAllBook(int pageNo) {
+    public Page<Book> getAllBook(int pageNo, String title, String author, String genre, Float price ) {
+        PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
+        return bookRepository.findAllByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCaseOrGenreContainingIgnoreCaseOrPrice(title,author, genre,price,pageable);
+    }
+    public Page<Book> getAllBooks(int pageNo) {
         PageRequest pageable = PageRequest.of(pageNo -1 , pageSize);
         return bookRepository.findAll(pageable);
     }

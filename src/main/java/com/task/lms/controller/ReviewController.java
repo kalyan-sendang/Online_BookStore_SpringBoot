@@ -3,23 +3,23 @@ package com.task.lms.controller;
 import com.task.lms.dto.ReqReviewDto;
 import com.task.lms.dto.ReviewDto;
 import com.task.lms.model.Review;
-
 import com.task.lms.service.ReviewService;
 import com.task.lms.utils.ResponseWrapper;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.validation.Valid;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RestController
 @RequestMapping("/api")
+@Tag(name = "Review Controller", description = "This is review api for reviews")
+
 public class ReviewController {
 
     private ReviewService reviewService;
